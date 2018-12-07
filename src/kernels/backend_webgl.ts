@@ -321,8 +321,8 @@ export class MathBackendWebGL implements KernelBackend {
     let width = texShape[1];
     let height = texShape[0];
     if (isPacked) {
-      [width, height] = tex_util.getPackedMatrixTextureShapeWidthHeight(
-          texShape[0], texShape[1]);
+      [height, width] =
+          tex_util.getPackedTextureRowsCols(texShape[0], texShape[1]);
     }
     const bufferOrTexture =
         this.gpgpu.maybeCreateBufferFromTexture(texture, height, width);
@@ -344,8 +344,11 @@ export class MathBackendWebGL implements KernelBackend {
         vals = this.gpgpu.downloadPackedMatrixFromBuffer(
             bufferOrTexture, batch, rows, cols, texShape[0], texShape[1]);
       } else {
-        vals = this.gpgpu.downloadFloat32MatrixFromBuffer(
-            bufferOrTexture, texShape[0], texShape[1]);
+        const size = util.sizeFromShape(shape);
+        vals = this.gpgpu
+                   .downloadFloat32MatrixFromBuffer(
+                       bufferOrTexture, texShape[0], texShape[1])
+                   .subarray(0, size);
       }
     }
     const dTypeVals = this.convertAndCacheOnCPU(dataId, vals);
@@ -374,8 +377,11 @@ export class MathBackendWebGL implements KernelBackend {
         return this.gpgpu.downloadMatrixFromPackedTexture(
             texture, batch, rows, cols, texShape[0], texShape[1]);
       } else {
-        return this.gpgpu.downloadFloat32MatrixFromOutputTexture(
-            texture, texShape[0], texShape[1]);
+        const size = util.sizeFromShape(shape);
+        return this.gpgpu
+            .downloadFloat32MatrixFromOutputTexture(
+                texture, texShape[0], texShape[1])
+            .subarray(0, size);
       }
     }
 

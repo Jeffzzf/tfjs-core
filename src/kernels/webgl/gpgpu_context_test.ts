@@ -189,9 +189,9 @@ describeWithFlags(
         const rows = 123;
         texture = gpgpu.createPackedMatrixTexture(rows, columns);
         gpgpu.setOutputPackedMatrixTexture(texture, rows, columns);
-        const [width, height] =
-            tex_util.getPackedMatrixTextureShapeWidthHeight(rows, columns);
-        const expected = new Int32Array([0, 0, width, height]);
+        const [texelRows, texelCols] =
+            tex_util.getPackedTextureRowsCols(rows, columns);
+        const expected = new Int32Array([0, 0, texelCols, texelRows]);
         expect(gpgpu.gl.getParameter(gpgpu.gl.VIEWPORT)).toEqual(expected);
       });
     });

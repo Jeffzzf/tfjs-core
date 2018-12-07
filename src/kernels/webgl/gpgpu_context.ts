@@ -357,9 +357,10 @@ export class GPGPUContext {
   public setOutputPackedMatrixTexture(
       outputPackedMatrixTexture: WebGLTexture, rows: number, columns: number) {
     this.throwIfDisposed();
-    const [width, height] =
-        tex_util.getPackedMatrixTextureShapeWidthHeight(rows, columns);
-    this.setOutputMatrixTextureDriver(outputPackedMatrixTexture, width, height);
+    const [texelRows, texelCols] =
+        tex_util.getPackedTextureRowsCols(rows, columns);
+    this.setOutputMatrixTextureDriver(
+        outputPackedMatrixTexture, texelCols, texelRows);
   }
 
   public setOutputMatrixWriteRegion(

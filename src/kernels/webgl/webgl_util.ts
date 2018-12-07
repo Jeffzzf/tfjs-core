@@ -339,44 +339,45 @@ export function getTextureShapeFromLogicalShape(
     // tensor has 3 rows, we pretend it has 4 rows in order to account for the
     // fact that the texels containing the third row are half empty.
     logShape = logShape.map(
-        (d, i) => i >= logShape.length - 2 ?
-            util.nearestLargerEven(logShape[i]) :
-            logShape[i]);
-  }
-
-  // If logical shape is 2, we don't squeeze, since we want to match physical.
-  if (logShape.length !== 2) {
-    const squeezeResult = util.squeezeShape(logShape);
-    logShape = squeezeResult.newShape;
+        (d, i) => i >= logShape.length - 2 ? util.nearestLargerEven(d) : d);
   }
 
   const size = util.sizeFromShape(logShape);
-  if (logShape.length <= 1 && size <= maxTexSize) {
-    return [1, size];
-  } else if (
-      logShape.length === 2 && logShape[0] <= maxTexSize &&
-      logShape[1] <= maxTexSize) {
-    return logShape as [number, number];
-  } else if (
-      logShape.length === 3 && logShape[0] * logShape[1] <= maxTexSize &&
-      logShape[2] <= maxTexSize) {
-    return [logShape[0] * logShape[1], logShape[2]];
-  } else if (
-      logShape.length === 3 && logShape[0] <= maxTexSize &&
-      logShape[1] * logShape[2] <= maxTexSize) {
-    return [logShape[0], logShape[1] * logShape[2]];
-  } else if (
-      logShape.length === 4 &&
-      logShape[0] * logShape[1] * logShape[2] <= maxTexSize &&
-      logShape[3] <= maxTexSize) {
-    return [logShape[0] * logShape[1] * logShape[2], logShape[3]];
-  } else if (
-      logShape.length === 4 && logShape[0] <= maxTexSize &&
-      logShape[1] * logShape[2] * logShape[3] <= maxTexSize) {
-    return [logShape[0], logShape[1] * logShape[2] * logShape[3]];
-  } else {
-    return util.sizeToSquarishShape(size);
-  }
+  return util.sizeToSquarishShape(size);
+
+  // // If logical shape is 2, we don't squeeze, since we want to match
+  // physical. if (logShape.length !== 2) {
+  //   const squeezeResult = util.squeezeShape(logShape);
+  //   logShape = squeezeResult.newShape;
+  // }
+
+  // const size = util.sizeFromShape(logShape);
+  // if (logShape.length <= 1 && size <= maxTexSize) {
+  //   return [1, size];
+  // } else if (
+  //     logShape.length === 2 && logShape[0] <= maxTexSize &&
+  //     logShape[1] <= maxTexSize) {
+  //   return logShape as [number, number];
+  // } else if (
+  //     logShape.length === 3 && logShape[0] * logShape[1] <= maxTexSize &&
+  //     logShape[2] <= maxTexSize) {
+  //   return [logShape[0] * logShape[1], logShape[2]];
+  // } else if (
+  //     logShape.length === 3 && logShape[0] <= maxTexSize &&
+  //     logShape[1] * logShape[2] <= maxTexSize) {
+  //   return [logShape[0], logShape[1] * logShape[2]];
+  // } else if (
+  //     logShape.length === 4 &&
+  //     logShape[0] * logShape[1] * logShape[2] <= maxTexSize &&
+  //     logShape[3] <= maxTexSize) {
+  //   return [logShape[0] * logShape[1] * logShape[2], logShape[3]];
+  // } else if (
+  //     logShape.length === 4 && logShape[0] <= maxTexSize &&
+  //     logShape[1] * logShape[2] * logShape[3] <= maxTexSize) {
+  //   return [logShape[0], logShape[1] * logShape[2] * logShape[3]];
+  // } else {
+  //   return util.sizeToSquarishShape(size);
+  // }
 }
 
 function isEven(n: number): boolean {

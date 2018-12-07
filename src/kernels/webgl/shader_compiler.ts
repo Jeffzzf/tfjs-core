@@ -1406,7 +1406,7 @@ function getSamplerAtOutputCoords(
 
   // At this point, the input is not a uniform.
   const inTexShape = inputInfo.shapeInfo.texShape;
-  if (util.arraysEqual(inTexShape, outTexShape)) {
+  if (!doBroadcast && util.arraysEqual(inTexShape, outTexShape)) {
     return `
       float ${funcName}() {
         return sampleTexture(${texName}, resultUV);

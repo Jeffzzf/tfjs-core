@@ -17,73 +17,59 @@
 
 import {describeWithFlags} from '../../jasmine_util';
 import {expectArraysClose, WEBGL_ENVS} from '../../test_util';
-
 import * as tex_util from './tex_util';
-
-describe('tex_util getUnpackedMatrixTextureShapeWidthHeight', () => {
-  it('[1x1] => [1x1]', () => {
-    expect(tex_util.getUnpackedMatrixTextureShapeWidthHeight(1, 1)).toEqual([
-      1, 1
-    ]);
-  });
-
-  it('[MxN] => [NxM]', () => {
-    expect(tex_util.getUnpackedMatrixTextureShapeWidthHeight(123, 456))
-        .toEqual([456, 123]);
-  });
-});
 
 describe('tex_util getPackedMatrixTextureShapeWidthHeight', () => {
   it('[1x1] => [1x1]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(1, 1);
+    const shape = tex_util.getPackedTextureRowsCols(1, 1);
     expect(shape).toEqual([1, 1]);
   });
 
   it('[1x2] => [1x1]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(1, 2);
+    const shape = tex_util.getPackedTextureRowsCols(1, 2);
     expect(shape).toEqual([1, 1]);
   });
 
   it('[2x1] => [1x1]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(2, 1);
+    const shape = tex_util.getPackedTextureRowsCols(2, 1);
     expect(shape).toEqual([1, 1]);
   });
 
   it('[2x2] => [1x1]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(2, 2);
+    const shape = tex_util.getPackedTextureRowsCols(2, 2);
     expect(shape).toEqual([1, 1]);
   });
 
   it('[3x3] => [2x2]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(3, 3);
+    const shape = tex_util.getPackedTextureRowsCols(3, 3);
     expect(shape).toEqual([2, 2]);
   });
 
   it('[4x3] => [2x2]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(4, 3);
+    const shape = tex_util.getPackedTextureRowsCols(4, 3);
     expect(shape).toEqual([2, 2]);
   });
 
   it('[3x4] => [2x2]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(3, 4);
+    const shape = tex_util.getPackedTextureRowsCols(3, 4);
     expect(shape).toEqual([2, 2]);
   });
 
   it('[4x4] => [2x2]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(4, 4);
+    const shape = tex_util.getPackedTextureRowsCols(4, 4);
     expect(shape).toEqual([2, 2]);
   });
 
   it('[1024x1024] => [512x512]', () => {
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(1024, 1024);
+    const shape = tex_util.getPackedTextureRowsCols(1024, 1024);
     expect(shape).toEqual([512, 512]);
   });
 
   it('[MxN] => [ceil(N/2)xceil(M/2)]', () => {
     const M = 123;
     const N = 5013;
-    const shape = tex_util.getPackedMatrixTextureShapeWidthHeight(M, N);
-    expect(shape).toEqual([Math.ceil(N / 2), Math.ceil(M / 2)]);
+    const shape = tex_util.getPackedTextureRowsCols(M, N);
+    expect(shape).toEqual([Math.ceil(M / 2), Math.ceil(N / 2)]);
   });
 });
 

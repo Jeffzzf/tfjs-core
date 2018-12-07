@@ -52,21 +52,6 @@ export interface TextureData {
   isPacked?: boolean;
 }
 
-export function getUnpackedMatrixTextureShapeWidthHeight(
-    rows: number, columns: number): [number, number] {
-  return [columns, rows];
-}
-
-export function getUnpackedArraySizeFromMatrixSize(
-    matrixSize: number, channelsPerTexture: number): number {
-  return matrixSize * channelsPerTexture;
-}
-
-export function getColorMatrixTextureShapeWidthHeight(
-    rows: number, columns: number): [number, number] {
-  return [columns * 4, rows];
-}
-
 export function getMatrixSizeFromUnpackedArraySize(
     unpackedSize: number, channelsPerTexture: number): number {
   if (unpackedSize % channelsPerTexture !== 0) {
@@ -78,18 +63,17 @@ export function getMatrixSizeFromUnpackedArraySize(
 }
 
 export function encodeMatrixToUnpackedArray(
-    matrix: Float32Array|Uint8Array, unpackedArray: Float32Array|Uint8Array,
+    data: Float32Array|Uint8Array, arrayToUpload: Float32Array|Uint8Array,
     channelsPerTexture: number) {
-  const requiredSize =
-      getUnpackedArraySizeFromMatrixSize(matrix.length, channelsPerTexture);
-  if (unpackedArray.length < requiredSize) {
+  const requiredSize = data.length * channelsPerTexture;
+  if (arrayToUpload.length < requiredSize) {
     throw new Error(
-        `unpackedArray length (${unpackedArray.length}) must be >= ` +
+        `unpackedArray length (${arrayToUpload.length}) must be >= ` +
         `${requiredSize}`);
   }
   let dst = 0;
-  for (let src = 0; src < matrix.length; ++src) {
-    unpackedArray[dst] = matrix[src];
+  for (let src = 0; src < data.length; ++src) {
+    arrayToUpload[dst] = data[src];
     dst += channelsPerTexture;
   }
 }
@@ -124,17 +108,12 @@ export function decodeMatrixFromUnpackedColorRGBAArray(
   }
 }
 
-export function getPackedMatrixTextureShapeWidthHeight(
+export function getPackedTextureRowsCols(
     rows: number, columns: number): [number, number] {
   return [
-    Math.max(1, Math.ceil(columns / 2)), Math.max(1, Math.ceil(rows / 2))
+    Math.max(1, Math.ceil(rows / 2)),
+    Math.max(1, Math.ceil(columns / 2)),
   ];
-}
-
-export function getPackedRGBAArraySizeFromMatrixShape(
-    rows: number, columns: number): number {
-  const [w, h] = getPackedMatrixTextureShapeWidthHeight(rows, columns);
-  return w * h * 4;
 }
 
 /*
@@ -159,12 +138,6 @@ Note the batch dimension is needed so xxx's are inserted below 020, 021, 022,
 export function encodeMatrixToPackedRGBA(
     matrix: Float32Array, batches: number, rows: number, columns: number,
     packedRGBA: Float32Array) {
-  const requiredSize = getPackedRGBAArraySizeFromMatrixShape(rows, columns);
-  if (packedRGBA.length < requiredSize) {
-    throw new Error(`packedRGBA length (${packedRGBA.length}) must be >=
-        ${requiredSize}`);
-  }
-
   const oddWidth = (columns % 2) === 1;
   const oddHeight = (rows % 2) === 1;
   const widthInFullBlocks = Math.floor(columns / 2);
