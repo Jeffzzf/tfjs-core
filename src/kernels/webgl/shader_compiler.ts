@@ -327,7 +327,7 @@ if (ENV.get('PROD')) {
    */
   NAN_CHECKS = `
     bool isNaN(float val) {
-      return (val < 1.0 || 0.0 < val || val == 0.0) ? false : true;
+      return false;
     }
 
     bool hasNaN(vec4 values) {
